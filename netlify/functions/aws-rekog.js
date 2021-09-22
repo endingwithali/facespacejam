@@ -24,7 +24,7 @@ exports.handler = async (event, context) => {
     try {
         switch (event.httpMethod) {
             case 'POST':
-                body = process(imageBytes);
+                body = await process(imageBytes);
                 break;
             default:
                 throw new Error(`Unsupported method "${event.httpMethod}"`);
