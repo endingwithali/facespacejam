@@ -3,9 +3,25 @@ const AWS = require('aws-sdk');
 // AWS.config(process.env.AWS)
 
 
+
+/*
+ const credentials = new AWS.SharedIniFileCredentials({
+    profile: process.env.SLS_PROFILE,
+  })
+
+  AWS.config.credentials = credentials
+
+  const rekognitionPromise = rekognition.indexFaces(params).promise()
+  const data = await rekognitionPromise.catch((error) => {
+    console.error("ERROR: unable to initialize user into REKOGNITION")
+    console.error(error)
+    const msg = error.message || "Error: initialization error"
+    throw new FaceError(400, msg)
+  })
+*/
 exports.handler = async (event, context) => {
     //console.log('Received event:', JSON.stringify(event, null, 2));
-    const eventBody = JSON.parse(event.body)
+    const eventBody = JSON.parse(event.body);
     let body;
     let statusCode = '200';
     const headers = {
@@ -20,20 +36,28 @@ exports.handler = async (event, context) => {
     for (var i = 0; i < length; i++) {
         ua[i] = eventBody.image.charCodeAt(i);
     }
-
+    // console.log("Image info")
+    // console.log(imageBytes)
     try {
         switch (event.httpMethod) {
             case 'POST':
-                body = await process(imageBytes);
+                await process(imageBytes).then(hello => {
+                    console.log(hello)
+                });
+                console.log("catch err 29")
                 break;
             default:
                 throw new Error(`Unsupported method "${event.httpMethod}"`);
         }
     } catch (err) {
+        console.log("catch err 34")
         statusCode = '400';
         body = err.message;
+        console.log(body)
     } finally {
+        console.log("catch err 39")
         body = JSON.stringify(body);
+        console.log(body)
     }
 
     return {
@@ -65,8 +89,9 @@ var process = async function(img){
             'DEFAULT',
         ]
     };
-    return boundingbox = await rekognition.detectFaces(params, function(err, response){
+    return rekognition.detectFaces(params, function(err, response){
         if (err){
+            console.log("rekognition failed")
             console.error(err);
             throw "Sparrow!";
         }
@@ -80,6 +105,6 @@ var process = async function(img){
             faces.push(faceInfo)
         })
         return faces
-    })
+    }).promise()
 }
 
