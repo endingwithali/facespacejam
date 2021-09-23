@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 
 exports.handler = async (event, context) => {
+    console.log(eventBody)
     const eventBody = JSON.parse(event.body);
     let body;
     let statusCode = '200';
