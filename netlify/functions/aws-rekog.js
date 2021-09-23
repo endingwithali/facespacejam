@@ -28,13 +28,35 @@ exports.handler = async (event, context) => {
         'Content-Type': 'application/json',
     };
 
+    var jpg = true;
+    var image;
+    try {
+      image = atob(eventBody.split("data:image/jpeg;base64,")[1]);
+
+    } catch (e) {
+      jpg = false;
+    }
+    if (jpg == false) {
+      try {
+        image = atob(e.target.result.split("data:image/png;base64,")[1]);
+      } catch (e) {
+        // alert("Not an image file Rekognition can process");
+        return {
+            statusCode: '400',
+            body: JSON.stringify({
+                error: "Not an image file type Rekognition can process (JPEG and PNG only)"
+            }),
+            headers,
+        };
+      }
+    }
 
     //unencode image bytes for Rekognition DetectFaces API 
-    var length = eventBody.image.length;
+    var length = image.length;
     imageBytes = new ArrayBuffer(length);
     var ua = new Uint8Array(imageBytes);
     for (var i = 0; i < length; i++) {
-        ua[i] = eventBody.image.charCodeAt(i);
+        ua[i] = image.charCodeAt(i);
     }
     // console.log("Image info")
     // console.log(imageBytes)
@@ -107,4 +129,7 @@ var process = async function(img){
         return faces
     }).promise()
 }
+
+
+
 
