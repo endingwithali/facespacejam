@@ -1,13 +1,11 @@
 async function submit(){
   var file = document.getElementById("fileUpload").files[0]
   var reader = new FileReader();
-  console.log(file)
   if (file) {
       reader.onerror = function(e){
           console.log(e)
       }  
       reader.onloadend = async function (e) {
-        console.log(e.target.result)
           await fetch(`/.netlify/functions/aws-rekog`, {
               method: 'POST',
               body: JSON.stringify({
@@ -15,13 +13,18 @@ async function submit(){
                   }),
               headers: { 'Content-Type': 'application/json' },
           }).then(response =>{
+            if (response.status != '200'){
+              // throw (errror)
+              return; 
+            }
+            console.log(response.status)
             return response.json()
           }).then(spicyResponse=>{
-            console.log(spicyResponse)
-            // const response = JSON.parse(resp.body)
-            console.log(spicyResponse.status)
-            console.log(spicyResponse.headers)
-
+            if (spicyResponse){
+              console.log(spicyResponse)
+            }
+            return;
+            
           })
 
       }
