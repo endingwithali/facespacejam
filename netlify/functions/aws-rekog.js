@@ -31,7 +31,8 @@ exports.handler = async (event, context) => {
     var jpg = true;
     var image;
     try {
-      image = atob(eventBody.split("data:image/jpeg;base64,")[1]);
+      image = atob(eventBody.image.split("data:image/jpeg;base64,")[1]);
+        // image = atob(eventBody.split("data:image/jpeg;base64,")[1]);
 
     } catch (e) {
       jpg = false;
