@@ -21,8 +21,9 @@ exports.handler = async (event, context) => {
     if (jpg == false) {
       try {
         image = atob(eventBody.image.split("data:image/png;base64,")[1]);
+        console.log("24")
       } catch (e) {
-        // alert("Not an image file Rekognition can process");
+        console.log("Not an image file Rekognition can process");
         return {
             statusCode: '405',
             body: JSON.stringify({
