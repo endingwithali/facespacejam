@@ -13,9 +13,10 @@ exports.handler = async (event, context) => {
     var image;
     try {
       image = atob(eventBody.image.split("data:image/jpeg;base64,")[1]);
-
+        console.log("16")
     } catch (e) {
       jpg = false;
+      console.log("19")
     }
     if (jpg == false) {
       try {
@@ -65,6 +66,7 @@ exports.handler = async (event, context) => {
         body = JSON.stringify({
             response: response
         })
+        console.log('finally')
     }
 
     console.log(body)
