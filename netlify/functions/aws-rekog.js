@@ -8,7 +8,7 @@ exports.handler = async (event, context) => {
     const headers = {
         'Content-Type': 'application/json',
     };
-
+    console.log(eventBody)
     var jpg = true;
     var image;
     try {
@@ -31,6 +31,7 @@ exports.handler = async (event, context) => {
         };
       }
     }
+    console.log("line 34")
 
     //unencode image bytes for Rekognition DetectFaces API 
     var length = image.length;
