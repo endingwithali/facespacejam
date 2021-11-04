@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.992.0",
+    "dotenv": "^10.0.0",
     "netlify": "^8.0.1"
   }
 }

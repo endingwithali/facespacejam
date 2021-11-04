@@ -1,22 +1,27 @@
 const AWS = require('aws-sdk');
+require('dotenv').config()
 
 exports.handler = async (event, context) => {
-    console.log(event.body)
+    // console.log(event.body)
     const eventBody = JSON.parse(event.body);
     let body;
     let statusCode = '200';
     const headers = {
         'Content-Type': 'application/json',
     };
-    console.log(eventBody)
+    // console.log(eventBody)
     var jpg = true;
     var image;
     try {
+        console.log(eventBody.image)
       image = atob(eventBody.image.split("data:image/jpeg;base64,")[1]);
-        console.log("16")
-    } catch (e) {
+      console.log("15")
+      console.log(typeof image)
+    //   image = eventBody.image.split("data:image/jpeg;base64,")[1]
+    // https://eloquentcode.com/base64-encode-and-decode-in-node-js
+        // console.log(image)    
+        } catch (e) {
       jpg = false;
-      console.log("19")
     }
     if (jpg == false) {
       try {
@@ -24,6 +29,7 @@ exports.handler = async (event, context) => {
         console.log("24")
       } catch (e) {
         console.log("Not an image file Rekognition can process");
+        console.log(e)
         return {
             statusCode: '405',
             body: JSON.stringify({
@@ -47,7 +53,7 @@ exports.handler = async (event, context) => {
     try {
         switch (event.httpMethod) {
             case 'POST':
-                await process(imageBytes).then(awsResp => {
+                await imageProcess(imageBytes).then(awsResp => {
                     if (response!=[]) {
                         response = awsResp.FaceDetails
                         statusCode = '200'
@@ -80,7 +86,14 @@ exports.handler = async (event, context) => {
     };
 };
 
-var process = async function(img){
+var imageProcess = async function(img){
+    AWS.config.update({
+        credentials: {
+            accessKeyId: process.env.accessBeans,
+            secretAccessKey: process.env.secretBeans
+        },
+        region: "us-east-1",
+    });
     var rekognition = new AWS.Rekognition();
     var params = {
         Image: {
